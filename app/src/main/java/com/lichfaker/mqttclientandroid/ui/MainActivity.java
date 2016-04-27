@@ -8,7 +8,9 @@ import com.lichfaker.log.Logger;
 import com.lichfaker.mqttclientandroid.R;
 import com.lichfaker.mqttclientandroid.mqtt.MqttManager;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,25 +46,41 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MqttManager.getInstance().publish("", 2, "test".getBytes());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MqttManager.getInstance().publish("test", 2, "hello".getBytes());
+                    }
+                }).start();
             }
         });
 
         findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MqttManager.getInstance().subscribe("", 2);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MqttManager.getInstance().subscribe("test", 2);
+                    }
+                }).start();
             }
         });
 
         findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    MqttManager.getInstance().disConnect();
-                } catch (Exception e) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            MqttManager.getInstance().disConnect();
+                        } catch (MqttException e) {
 
-                }
+                        }
+                    }
+                }).start();
+
             }
         });
 
@@ -75,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param message
      */
+    @Subscribe
     public void onEvent(MqttMessage message) {
         Logger.d(message.toString());
     }
