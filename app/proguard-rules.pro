@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#Mqtt3
+-keep class org.eclipse.paho.clent.mqttv3.** {*;}
+-keep class org.eclipse.paho.client.mqttv3.*$* { *; }
+-keep class org.eclipse.paho.client.mqttv3.logging.JSR47Logger {
+    *;
+}
